@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth_provider.dart';
 import '../../providers/clan_provider.dart';
 
 class ClanCreationScreen extends StatefulWidget {
@@ -27,11 +28,25 @@ class _ClanCreationScreenState extends State<ClanCreationScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final provider = context.read<ClanProvider>();
-    final success = await provider.createClan(
+    final authProvider = context.read<AuthProvider>();
+    final clanProvider = context.read<ClanProvider>();
+    final userId = authProvider.currentUser?.uid;
+
+    if (userId == null || userId.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You must be signed in to create a clan.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final success = await clanProvider.createClan(
       name: _nameController.text.trim(),
       description: _descriptionController.text.trim(),
-      createdByUserId: 'demo-user-id',
+      createdByUserId: userId,
       location: _locationController.text.trim(),
     );
 
@@ -48,7 +63,7 @@ class _ClanCreationScreenState extends State<ClanCreationScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(provider.errorMessage ?? 'Unable to create clan'),
+          content: Text(clanProvider.errorMessage ?? 'Unable to create clan'),
           backgroundColor: Colors.red,
         ),
       );
@@ -57,6 +72,9 @@ class _ClanCreationScreenState extends State<ClanCreationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final userId = authProvider.currentUser?.uid;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Clan'),
@@ -69,13 +87,15 @@ class _ClanCreationScreenState extends State<ClanCreationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Build your clan network',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Text(
+                  userId == null ? 'Sign in to create a clan' : 'Build your clan network',
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Create a shared space for members, contributions, and updates.',
+                  userId == null
+                      ? 'You need an authenticated account before creating a clan.'
+                      : 'Create a shared space for members, contributions, and updates.',
                   style: TextStyle(color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 24),
@@ -116,7 +136,7 @@ class _ClanCreationScreenState extends State<ClanCreationScreen> {
                     return SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: provider.isLoading ? null : _submit,
+                        onPressed: (provider.isLoading || userId == null) ? null : _submit,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
@@ -126,7 +146,7 @@ class _ClanCreationScreenState extends State<ClanCreationScreen> {
                                 height: 20,
                                 child: CircularProgressIndicator(strokeWidth: 2),
                               )
-                            : const Text('Create Clan'),
+                            : Text(userId == null ? 'Sign In Required' : 'Create Clan'),
                       ),
                     );
                   },
