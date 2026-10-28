@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'config/firebase_config.dart';
 import 'providers/auth_provider.dart';
+import 'providers/clan_provider.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
+import 'screens/clan/clan_creation_screen.dart';
+import 'screens/financial/finance_dashboard_screen.dart';
 import 'screens/home/home_screen.dart';
 
 void main() async {
@@ -21,6 +24,7 @@ class ClanUniteApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ClanProvider()),
       ],
       child: MaterialApp(
         title: 'Clan Unite',
@@ -57,6 +61,8 @@ class ClanUniteApp extends StatelessWidget {
           '/login': (_) => const LoginScreen(),
           '/signup': (_) => const SignUpScreen(),
           '/home': (_) => const HomeScreen(),
+          '/clan-create': (_) => const ClanCreationScreen(),
+          '/finance-dashboard': (_) => const FinanceDashboardScreen(),
         },
       ),
     );

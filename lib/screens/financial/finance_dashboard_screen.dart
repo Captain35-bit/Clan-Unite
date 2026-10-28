@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../providers/clan_provider.dart';
-import '../../services/financial_service.dart';
 
 class FinanceDashboardScreen extends StatelessWidget {
   const FinanceDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final finance = FinancialService();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Finance Dashboard'),
@@ -31,7 +25,7 @@ class FinanceDashboardScreen extends StatelessWidget {
                   Expanded(
                     child: _StatCard(
                       title: 'Balance',
-                      value: finance.formatCurrency(25000.00),
+                      value: '\$25,000.00',
                       color: Colors.blue,
                       icon: Icons.account_balance_wallet,
                     ),
@@ -40,7 +34,7 @@ class FinanceDashboardScreen extends StatelessWidget {
                   Expanded(
                     child: _StatCard(
                       title: 'Contributions',
-                      value: finance.formatCurrency(12000.00),
+                      value: '\$12,000.00',
                       color: Colors.green,
                       icon: Icons.attach_money,
                     ),
@@ -53,7 +47,7 @@ class FinanceDashboardScreen extends StatelessWidget {
                   Expanded(
                     child: _StatCard(
                       title: 'Loans',
-                      value: finance.formatCurrency(6000.00),
+                      value: '\$6,000.00',
                       color: Colors.orange,
                       icon: Icons.currency_exchange,
                     ),
@@ -62,7 +56,7 @@ class FinanceDashboardScreen extends StatelessWidget {
                   Expanded(
                     child: _StatCard(
                       title: 'Expenses',
-                      value: finance.formatCurrency(3000.00),
+                      value: '\$3,000.00',
                       color: Colors.red,
                       icon: Icons.trending_down,
                     ),

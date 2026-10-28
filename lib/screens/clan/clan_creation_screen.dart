@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/clan_provider.dart';
-import '../utils/validators.dart';
+import '../../providers/clan_provider.dart';
 
 class ClanCreationScreen extends StatefulWidget {
   const ClanCreationScreen({super.key});
@@ -86,7 +85,9 @@ class _ClanCreationScreenState extends State<ClanCreationScreen> {
                     labelText: 'Clan name',
                     prefixIcon: Icon(Icons.group),
                   ),
-                  validator: (value) => Validators.validateRequired(value, 'Clan name'),
+                  validator: (value) => value == null || value.trim().isEmpty
+                      ? 'Clan name is required'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -97,7 +98,9 @@ class _ClanCreationScreenState extends State<ClanCreationScreen> {
                     alignLabelWithHint: true,
                     prefixIcon: Icon(Icons.description),
                   ),
-                  validator: (value) => Validators.validateRequired(value, 'Description'),
+                  validator: (value) => value == null || value.trim().isEmpty
+                      ? 'Description is required'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
