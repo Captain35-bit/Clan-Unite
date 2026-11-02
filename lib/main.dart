@@ -9,6 +9,7 @@ import 'screens/auth/signup_screen.dart';
 import 'screens/clan/clan_creation_screen.dart';
 import 'screens/financial/finance_dashboard_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'screens/members/member_directory_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,25 +32,17 @@ class ClanUniteApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
           useMaterial3: true,
-          appBarTheme: const AppBarTheme(
-            elevation: 0,
-            centerTitle: true,
-          ),
+          appBarTheme: const AppBarTheme(elevation: 0, centerTitle: true),
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 16,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -63,6 +56,7 @@ class ClanUniteApp extends StatelessWidget {
           '/home': (_) => const HomeScreen(),
           '/clan-create': (_) => const ClanCreationScreen(),
           '/finance-dashboard': (_) => const FinanceDashboardScreen(),
+          '/members-directory': (_) => const MemberDirectoryScreen(),
         },
       ),
     );
@@ -73,15 +67,9 @@ class AuthWrapper extends StatelessWidget {
   const AuthWrapper({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, _) {
-        if (authProvider.isAuthenticated) {
-          return const HomeScreen();
-        } else {
-          return const LoginScreen();
-        }
-      },
-    );
-  }
+  Widget build(BuildContext context) => Consumer<AuthProvider>(
+    builder: (context, authProvider, _) => authProvider.isAuthenticated
+        ? const HomeScreen()
+        : const LoginScreen(),
+  );
 }
