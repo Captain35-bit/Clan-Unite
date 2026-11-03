@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../events/events_screen.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -43,7 +45,9 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.people, color: Colors.orange,
                     onTap: () => Navigator.pushNamed(context, '/members-directory')),
                   _HomeCard(title: 'Events', subtitle: 'Upcoming',
-                    icon: Icons.event, color: Colors.purple, onTap: () {}),
+                    icon: Icons.event, color: Colors.purple,
+                    onTap: () => Navigator.push(context,
+                      MaterialPageRoute<void>(builder: (_) => const EventsScreen()))),
                 ],
               ),
               const SizedBox(height: 24),
