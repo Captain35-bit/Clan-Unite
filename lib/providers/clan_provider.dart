@@ -14,13 +14,13 @@ class ClanProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> loadClans() async {
+  Future<void> loadClans(String userId) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _clans = await _firestoreService.getClans();
+      _clans = await _firestoreService.getClansForMember(userId);
     } catch (e) {
       _errorMessage = 'Failed to load clans';
       debugPrint('ClanProvider.loadClans error: $e');
@@ -57,7 +57,7 @@ class ClanProvider extends ChangeNotifier {
 
     try {
       await _firestoreService.createClan(clan);
-      await loadClans();
+      await loadClans(createdByUserId);
       return true;
     } catch (e) {
       _errorMessage = 'Failed to create clan';

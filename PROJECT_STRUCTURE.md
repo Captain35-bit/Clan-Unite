@@ -95,11 +95,15 @@ clan_unite/
 ### State Management
 - ✅ `lib/providers/auth_provider.dart` - Auth state
 - ✅ `lib/providers/clan_provider.dart` - Clan state
-- ✅ `lib/providers/financial_provider.dart` - Finance state
+- ✅ `lib/providers/financial_provider.dart` - Clan finance state and entries
 
 ### UI Screens
 - ✅ `lib/screens/auth/login_screen.dart` - Login UI
+- ✅ `lib/screens/auth/signup_screen.dart` - Account creation
+- ✅ `lib/screens/auth/password_reset_screen.dart` - Password reset
 - ✅ `lib/screens/home/home_screen.dart` - Home dashboard
+- ✅ `lib/screens/clan/clan_creation_screen.dart` - Clan creation
+- ✅ `lib/screens/financial/finance_dashboard_screen.dart` - Clan finance dashboard
 
 ## 📋 Next Steps
 
@@ -116,9 +120,9 @@ flutter pub get
 - Download `GoogleService-Info.plist` (iOS)
 - Update `lib/config/firebase_options.dart`
 
-### 3. **Create Additional Screens** (TODO)
-- Sign up screen
-- Financial screens (contributions, loans, etc.)
+### 3. **Complete Additional Screens**
+- Financial dashboard and contribution/expense recording are implemented
+- Loan management, dividends, reports, social, member, event, and location screens remain
 - Member screens (directory, profiles)
 - Social screens (chat, feed, gallery)
 - Location screen (map)

@@ -52,20 +52,24 @@ class FirestoreService {
     return ClanModel.fromMap(doc.data()!, id: doc.id);
   }
 
-  Future<List<ClanModel>> getClans() async {
-    final snapshot = await _clansCollection().orderBy('updatedAt', descending: true).get();
+  Future<List<ClanModel>> getClansForMember(String userId) async {
+    final snapshot = await _clansCollection()
+        .where('memberIds', arrayContains: userId)
+        .get();
     return snapshot.docs
         .map((doc) => ClanModel.fromMap(doc.data(), id: doc.id))
-        .toList();
+        .toList()
+      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
   }
 
-  Stream<List<ClanModel>> streamClans() {
+  Stream<List<ClanModel>> streamClansForMember(String userId) {
     return _clansCollection()
-        .orderBy('updatedAt', descending: true)
+        .where('memberIds', arrayContains: userId)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => ClanModel.fromMap(doc.data(), id: doc.id))
-            .toList());
+            .toList()
+          ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt)));
   }
 
   Future<void> updateClan(String clanId, Map<String, dynamic> updates) async {
@@ -100,6 +104,66 @@ class FirestoreService {
     await _contributionsCollection(clanId)
         .doc(contribution.id)
         .set(contribution.toMap(), SetOptions(merge: true));
+  }
+
+  Future<void> recordContribution(ContributionModel contribution) async {
+    final clanRef = _clansCollection().doc(contribution.clanId);
+    final contributionRef =
+        _contributionsCollection(contribution.clanId).doc(contribution.id);
+    final transactionRef =
+        _transactionsCollection(contribution.clanId).doc(contribution.id);
+
+    await _db.runTransaction((transaction) async {
+      final clanSnapshot = await transaction.get(clanRef);
+      if (!clanSnapshot.exists) {
+        throw StateError('The selected clan no longer exists.');
+      }
+
+      transaction.set(contributionRef, contribution.toMap());
+      transaction.set(
+        transactionRef,
+        TransactionModel(
+          id: contribution.id,
+          clanId: contribution.clanId,
+          type: 'contribution',
+          amount: contribution.amount,
+          description: contribution.description,
+          createdByUserId: contribution.memberId,
+          category: 'contribution',
+          createdAt: contribution.createdAt,
+        ).toMap(),
+      );
+      transaction.update(clanRef, {
+        'balance': FieldValue.increment(contribution.amount),
+        'updatedAt': contribution.createdAt,
+      });
+    });
+  }
+
+  Future<void> recordExpense(TransactionModel expense) async {
+    final clanRef = _clansCollection().doc(expense.clanId);
+    final transactionRef =
+        _transactionsCollection(expense.clanId).doc(expense.id);
+
+    await _db.runTransaction((transaction) async {
+      final clanSnapshot = await transaction.get(clanRef);
+      if (!clanSnapshot.exists) {
+        throw StateError('The selected clan no longer exists.');
+      }
+
+      final data = clanSnapshot.data();
+      final balance =
+          data?['balance'] is num ? (data!['balance'] as num).toDouble() : 0.0;
+      if (balance < expense.amount) {
+        throw StateError('This expense is greater than the available balance.');
+      }
+
+      transaction.set(transactionRef, expense.toMap());
+      transaction.update(clanRef, {
+        'balance': FieldValue.increment(-expense.amount),
+        'updatedAt': expense.createdAt,
+      });
+    });
   }
 
   Future<List<ContributionModel>> getContributions(String clanId) async {

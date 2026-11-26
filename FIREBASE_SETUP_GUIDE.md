@@ -46,7 +46,7 @@ Once created, note these details:
 2. Select **"Android"**
 3. Fill in the following:
    ```
-   Android Package Name: com.example.clan_unite
+   Android Package Name: com.clanunite.clan_unite
    App Nickname: Clan Unite Android (optional)
    Debug SHA-1 (optional): Get it in Step 2.3
    ```
@@ -88,9 +88,9 @@ Your project structure should now look like:
 android/
 ├── app/
 │   ├── google-services.json  ✅ (newly added)
-│   ├── build.gradle
+│   ├── build.gradle.kts
 │   └── ...
-├── build.gradle
+├── build.gradle.kts
 └── ...
 ```
 

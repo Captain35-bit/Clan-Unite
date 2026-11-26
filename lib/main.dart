@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'config/firebase_config.dart';
 import 'providers/auth_provider.dart';
 import 'providers/clan_provider.dart';
+import 'providers/financial_provider.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'screens/clan/clan_creation_screen.dart';
@@ -25,6 +26,7 @@ class ClanUniteApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ClanProvider()),
+        ChangeNotifierProvider(create: (_) => FinancialProvider()),
       ],
       child: MaterialApp(
         title: 'Clan Unite',

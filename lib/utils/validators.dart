@@ -55,7 +55,7 @@ class Validators {
       return 'Name must not exceed 50 characters';
     }
 
-    if (!RegExp(r'^[a-zA-Z\s\'-]+$').hasMatch(value)) {
+    if (!RegExp(r"^[a-zA-Z\s'-]+$").hasMatch(value)) {
       return 'Name can only contain letters, spaces, hyphens, and apostrophes';
     }
 
